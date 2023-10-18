@@ -1,0 +1,56 @@
+name: CI
+on:
+  workflow_dispatch:
+    inputs:
+      upload-build-artifacts:
+        type: boolean
+        required: false
+        default: false
+        description: Upload build artifacts
+  push:
+    paths-ignore:
+      - 'CHANGELOG.md'
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '0 11 * * 4'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  pre-commit:
+    uses: ./.github/workflows/step_pre-commit.yml
+
+  codeql:
+    needs: pre-commit
+    uses: ./.github/workflows/step_static-analysis.yml
+
+  test-pip:
+    needs: pre-commit
+    uses: ./.github/workflows/step_tests-pip.yml
+
+  test-conda:
+    needs: pre-commit
+    uses: ./.github/workflows/step_tests-conda.yml
+
+  build:
+    needs: [pre-commit, codeql, test-pip, test-conda]
+    uses: ./.github/workflows/step_build.yml
+    with:
+      upload: ${{ inputs.upload-build-artifacts || false }}
+
+  pass:
+    needs: [pre-commit, codeql, test-pip, test-conda]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check jobs
+        uses: re-actors/alls-green@release/v1
+        with:
+          jobs: ${{ toJSON(needs) }}
+    if: always()
