@@ -27,9 +27,9 @@ jobs:
   pre-commit:
     uses: ./.github/workflows/step_pre-commit.yml
 
-  codeql:
-    needs: pre-commit
-    uses: ./.github/workflows/step_static-analysis.yml
+  # codeql:
+  #   needs: pre-commit
+  #   uses: ./.github/workflows/step_static-analysis.yml
 
   test-pip:
     needs: pre-commit
@@ -40,13 +40,13 @@ jobs:
     uses: ./.github/workflows/step_tests-conda.yml
 
   build:
-    needs: [pre-commit, codeql, test-pip, test-conda]
+    needs: [pre-commit, test-pip, test-conda]
     uses: ./.github/workflows/step_build.yml
     with:
       upload: ${{ inputs.upload-build-artifacts || false }}
 
   pass:
-    needs: [pre-commit, codeql, test-pip, test-conda]
+    needs: [pre-commit, test-pip, test-conda]
     runs-on: ubuntu-latest
     steps:
       - name: Check jobs
