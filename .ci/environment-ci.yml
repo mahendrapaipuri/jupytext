@@ -10,7 +10,6 @@ channels:
   - defaults
   - conda-forge
 dependencies:
-  - jupyterlab>=4.0.0
   - ipykernel
   - nbconvert
   - nbformat>=5.1.2
