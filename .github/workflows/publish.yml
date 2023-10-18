@@ -10,20 +10,24 @@ jobs:
   pre-commit:
     uses: ./.github/workflows/step_pre-commit.yml
 
-  test-pip:
+  codeql:
     needs: pre-commit
+    uses: ./.github/workflows/step_static-analysis.yml
+
+  test-pip:
+    needs: [ pre-commit, codeql ]
     uses: ./.github/workflows/step_tests-pip.yml
 
   test-conda:
-    needs: pre-commit
+    needs: [ pre-commit, codeql ]
     uses: ./.github/workflows/step_tests-conda.yml
 
   build:
-    needs: [pre-commit, test-pip, test-conda]
+    needs: [ pre-commit, codeql, test-pip, test-conda ]
     uses: ./.github/workflows/step_build.yml
 
   publish:
-    needs: [pre-commit, test-pip, test-conda, build]
+    needs: [ pre-commit, codeql, test-pip, test-conda, build ]
     runs-on: ubuntu-latest
 
     environment:

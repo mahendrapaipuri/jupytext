@@ -47,7 +47,6 @@ jobs:
         uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
         with:
           python_version: ${{ matrix.python-version }}
-          allow-pre-releases: ${{ matrix.experimental || false }}
 
       - name: Install from source (required for the pre-commit tests)
         run: |
