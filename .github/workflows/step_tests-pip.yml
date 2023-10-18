@@ -50,8 +50,7 @@ jobs:
           python_version: ${{ matrix.python-version }}
 
       - name: Install from source (required for the pre-commit tests)
-        run: |
-          python -m pip install -e '.[test-cov]' ${{ matrix.markdown-it-py-version && format('markdown-it-py{0}', matrix.markdown-it-py-version) }}
+        run: python -m pip install -e '.[test-cov]' ${{ matrix.markdown-it-py-version && format('markdown-it-py{0}', matrix.markdown-it-py-version) }}
 
       - name: Install a Jupyter Kernel
         if: ${{ matrix.kernel }}

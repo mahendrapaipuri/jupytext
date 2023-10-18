@@ -27,20 +27,20 @@ jobs:
   pre-commit:
     uses: ./.github/workflows/step_pre-commit.yml
 
-  # codeql:
-  #   needs: pre-commit
-  #   uses: ./.github/workflows/step_static-analysis.yml
+  codeql:
+    needs: [ pre-commit ]
+    uses: ./.github/workflows/step_static-analysis.yml
 
   test-pip:
-    needs: pre-commit
+    needs: [ codeql ]
     uses: ./.github/workflows/step_tests-pip.yml
 
   test-conda:
-    needs: pre-commit
+    needs: [ codeql ]
     uses: ./.github/workflows/step_tests-conda.yml
 
   build:
-    needs: [ pre-commit, test-pip, test-conda ]
+    needs: [ test-pip, test-conda ]
     uses: ./.github/workflows/step_build.yml
     with:
       upload: ${{ inputs.upload-build-artifacts || false }}
