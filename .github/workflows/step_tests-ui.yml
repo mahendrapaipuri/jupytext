@@ -36,3 +36,11 @@ jobs:
       - name: Integration tests
         working-directory: jupyterlab/packages/jupyterlab-jupytext-extension/ui-tests
         run: jlpm playwright test
+
+      - name: Upload UI Test artifacts
+        if: failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: ui-test-output
+          path: |
+            jupyterlab/packages/jupyterlab-jupytext-extension/ui-tests/test-results
