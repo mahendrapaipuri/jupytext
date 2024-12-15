@@ -46,10 +46,6 @@ jobs:
           pip install jupyterlab
           jlpm install
 
-      - name: Install browser
-        working-directory: jupyterlab/packages/jupyterlab-jupytext-extension/ui-tests
-        run: jlpm playwright install chromium
-
       - name: Update snapshots
         uses: jupyterlab/maintainer-tools/.github/actions/update-snapshots@v1
         with:
@@ -57,11 +53,6 @@ jobs:
           # Test folder within your repository
           test_folder: jupyterlab/packages/jupyterlab-jupytext-extension/ui-tests/tests
 
-          # Optional npm scripts (the default values are displayed)
-          # Script to start the server or 'null' if Playwright is taking care of it
-          #   If not `null`, you must provide a `server_url` to listen to.
-          start_server_script: start
-          # Server url to wait for before updating the snapshots
-          #  See specification for https://github.com/iFaxity/wait-on-action `resource`
-          server_url: http-get://localhost:8888
-          update_script: test:update
+          # Playwright knows how to start JupyterLab server
+          start_server_script: 'null'
+          npm_client: jlpm
