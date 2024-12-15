@@ -29,16 +29,21 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Install your project
+      - name: Install from source
+        run: HATCH_BUILD_HOOKS_ENABLE=true python -m pip install -e '.[test-ui]'
+
+      - name: Uninstall jupyter-fs
         run: |
-          # Execute the required installation command
+          # Uninstall jupyter-fs as it overrides the original browser-test.js to
+          # check its own functionality (https://github.com/jpmorganchase/jupyter-fs/blob/main/jupyterfs/browser-test.js)
+          pip uninstall jupyter-fs -y
 
       - name: Update snapshots
         uses: jupyterlab/maintainer-tools/.github/actions/update-snapshots@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           # Test folder within your repository
-          test_folder: playwright-tests
+          test_folder: jupyterlab/packages/jupyterlab-jupytext-extension/ui-tests/tests
 
           # Optional npm scripts (the default values are displayed)
           # Script to start the server or 'null' if Playwright is taking care of it
