@@ -38,6 +38,18 @@ jobs:
           # check its own functionality (https://github.com/jpmorganchase/jupyter-fs/blob/main/jupyterfs/browser-test.js)
           pip uninstall jupyter-fs -y
 
+      - name: Install galata
+        working-directory: jupyterlab/packages/jupyterlab-jupytext-extension/ui-tests
+        env:
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
+        run: |
+          pip install jupyterlab
+          jlpm install
+
+      - name: Install browser
+        working-directory: jupyterlab/packages/jupyterlab-jupytext-extension/ui-tests
+        run: jlpm playwright install chromium
+
       - name: Update snapshots
         uses: jupyterlab/maintainer-tools/.github/actions/update-snapshots@v1
         with:
